@@ -2,6 +2,7 @@ package main;
 
 import data.NecessaryData;
 import data.Style;
+import main.views.Start;
 import main.views.View;
 import main.views.Welcome;
 import set.NecessarySet;
@@ -16,11 +17,12 @@ import java.util.HashSet;
 public class MainInterface extends JFrame {
     final CardLayout cardLayout=new CardLayout();
     protected View current;
-    protected void setCurrent(View abstractSubpages){
+    public void setCurrent(View abstractSubpages){
         cardLayout.show(show,abstractSubpages.viewName);
         current=abstractSubpages;
     }
-    final public Welcome maker=new Welcome();
+    final public Welcome welcome =new Welcome();
+    final public Start start=new Start();
     public static MainInterface mainInterface;
     private JPanel contentPane;
     private JPanel show;
@@ -41,8 +43,9 @@ public class MainInterface extends JFrame {
                 (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
         );
         show.setLayout(cardLayout);
-        show.add(maker.jPanel,maker.viewName);
-        setCurrent(maker);
+        show.add(welcome.jPanel, welcome.viewName);
+        show.add(start.jPanel,start.viewName);
+        setCurrent(welcome);
         flush();
         setVisible(true);
         for (float i=0;i<1;i+= 0.001F){
@@ -52,10 +55,6 @@ public class MainInterface extends JFrame {
         exit.addActionListener(e -> System.exit(0));
         set.addActionListener(e -> {
             NecessarySet necessarySet=new NecessarySet();
-            necessarySet.setSize(
-                    (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*2/3,
-                    (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*2/3
-            );
             necessarySet.setVisible(true);
             flush();
         });
@@ -84,5 +83,15 @@ public class MainInterface extends JFrame {
         buttons.add(set);
         buttons.add(flush);
         Style.setStyle(jPanels,buttons,null);
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        contentPane=new JPanel(){
+            private final Image image = new ImageIcon("resource/img/背景.png").getImage();
+            protected void paintComponent(Graphics g) {
+                g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
+            }
+        };
     }
 }

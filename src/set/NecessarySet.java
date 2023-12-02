@@ -6,6 +6,7 @@ import data.Style;
 import tools.ErrorInterface;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashSet;
 
 /**
@@ -13,7 +14,6 @@ import java.util.HashSet;
  */
 public class NecessarySet extends Set {
     private JPanel contentPane;
-    private JButton style;
     private JButton buttonOkay;
     private JPanel right;
     private JButton buttonCancel;
@@ -26,6 +26,11 @@ public class NecessarySet extends Set {
         right.setLayout(cardLayout);
         right.add(defaultPage.contentPane,defaultPage.name);
         setCurrent(defaultPage);
+        setSize(
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*2/3,
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*2/3
+        );
+        setLocationRelativeTo(null);
         buttonOkay.addActionListener(ee -> {
             if (current!=defaultPage){
                 current.onOkay();
@@ -58,7 +63,6 @@ public class NecessarySet extends Set {
         jPanels.add(up);
         jPanels.add(down);
         jPanels.add(right);
-        buttons.add(style);
         buttons.add(buttonOkay);
         buttons.add(buttonCancel);
         Style.setStyle(jPanels,buttons,null);
