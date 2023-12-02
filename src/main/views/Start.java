@@ -1,5 +1,6 @@
 package main.views;
 
+import data.Config;
 import data.Style;
 
 import javax.swing.*;
@@ -11,15 +12,21 @@ public class Start extends View{
     private JLabel left;
     private JPanel show;
     private JLabel right;
-    private JPanel blue;
-    private JPanel red;
     private JPanel vs;
     private JButton stop;
+    private JPanel l;
+    private JPanel r;
 
     public Start() {
         super(Start.class.toString());
         super.jPanel=pane;
-        flush();
+        setStyle();
+    }
+    @Override
+    public void flush(){
+        super.flush();
+        left.setText("正方:"+ Config.config.prosName);
+        right.setText("反方:"+ Config.config.consName);
     }
 
     @Override
@@ -28,9 +35,10 @@ public class Start extends View{
         HashSet<JComponent> buttons = new HashSet<>();
         jPanels.add(pane);
         jPanels.add(show);
-        jPanels.add(blue);
-        jPanels.add(red);
         jPanels.add(vs);
+        buttons.add(left);
+        buttons.add(right);
+        buttons.add(stop);
         Style.setStyle(jPanels,buttons,null);
     }
 
@@ -48,13 +56,13 @@ public class Start extends View{
                 g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
             }
         };
-        blue=new JPanel(){
+        l=new JPanel(){
             private final Image image = new ImageIcon("resource/img/正方.png").getImage();
             protected void paintComponent(Graphics g) {
                 g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
             }
         };
-        red=new JPanel(){
+        r=new JPanel(){
             private final Image image = new ImageIcon("resource/img/反方.png").getImage();
             protected void paintComponent(Graphics g) {
                 g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);

@@ -35,6 +35,7 @@ public class Welcome extends View {
 
     public Welcome() {
         super(Welcome.class.toString());
+        NecessaryData.necessaryData.configs.add(new Config("1","正方l","反方r"));
         super.jPanel= contentPane;
         delete.setEnabled(false);
         edit.setEnabled(false);
@@ -147,6 +148,7 @@ public class Welcome extends View {
         });
         use.addActionListener(e -> {
             Config.config=current[0];
+            MainInterface.mainInterface.start.flush();
             MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.start);
         });
     }

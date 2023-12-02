@@ -19,6 +19,7 @@ public class MainInterface extends JFrame {
     protected View current;
     public void setCurrent(View abstractSubpages){
         cardLayout.show(show,abstractSubpages.viewName);
+        repaint();
         current=abstractSubpages;
     }
     final public Welcome welcome =new Welcome();

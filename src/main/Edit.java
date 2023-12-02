@@ -1,12 +1,14 @@
 package main;
 
 import data.Config;
+import data.Style;
 import main.views.DebatePage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * @author wysha
@@ -45,11 +47,19 @@ public class Edit extends JDialog {
                 (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*2/3
         );
         setLocationRelativeTo(null);
+        flush();
         setVisible(true);
     }
 
     private void flush(){
         list.setListData(debatePages.toArray(new DebatePage[0]));
+    }
+
+    public void setStyle() {
+        HashSet<JComponent> jPanels = new HashSet<>();
+        HashSet<JComponent> buttons = new HashSet<>();
+        jPanels.add(contentPane);
+        Style.setStyle(jPanels,buttons,null);
     }
 
     private void onOkay() {
