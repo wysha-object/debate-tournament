@@ -3,6 +3,7 @@ package main.views;
 import data.Config;
 import data.NecessaryData;
 import data.Style;
+import main.Bout;
 import main.Edit;
 import main.MainInterface;
 import tools.ErrorInterface;
@@ -16,6 +17,7 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author wysha
@@ -35,7 +37,7 @@ public class Welcome extends View {
 
     public Welcome() {
         super(Welcome.class.toString());
-        NecessaryData.necessaryData.configs.add(new Config("1","123正方l","456反方r","eee?"));
+        NecessaryData.necessaryData.configs.add(new Config("1","123正方l","456反方r","eee?", List.of(new Bout[]{new Bout("e",5,0)})));
         super.jPanel= contentPane;
         delete.setEnabled(false);
         edit.setEnabled(false);
@@ -149,6 +151,7 @@ public class Welcome extends View {
         use.addActionListener(e -> {
             Config.config=current[0];
             MainInterface.mainInterface.start.flush();
+            MainInterface.mainInterface.start.run();
             MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.start);
         });
     }
