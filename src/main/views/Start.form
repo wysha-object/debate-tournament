@@ -1,26 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="main.views.Start">
-  <grid id="27dc6" binding="pane" custom-create="true" layout-manager="GridLayoutManager" row-count="4" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="pane" custom-create="true" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="1596" height="400"/>
+      <xy x="20" y="20" width="1904" height="612"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="8f2ae" binding="show" custom-create="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="d330b" binding="vs" custom-create="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children/>
-      </grid>
-      <grid id="d330b" binding="vs" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="1" row-span="2" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="1" row-span="3" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="360" height="360"/>
+          </grid>
         </constraints>
         <properties/>
         <border type="none"/>
@@ -28,18 +21,23 @@
       </grid>
       <component id="72ab7" class="javax.swing.JButton" binding="stop">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="90"/>
+          </grid>
         </constraints>
         <properties>
+          <background color="-12632257"/>
+          <font name="Microsoft YaHei" size="24" style="0"/>
+          <foreground color="-1"/>
           <text value="结束发言"/>
         </properties>
       </component>
       <grid id="611b7" binding="l" custom-create="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
-            <minimum-size width="760" height="90"/>
-            <maximum-size width="760" height="90"/>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="760" height="60"/>
+            <maximum-size width="760" height="60"/>
           </grid>
         </constraints>
         <properties/>
@@ -49,9 +47,9 @@
       <grid id="3bbf" binding="r" custom-create="true" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="5" fill="0" indent="0" use-parent-layout="false">
-            <minimum-size width="760" height="90"/>
-            <maximum-size width="760" height="90"/>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="5" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="760" height="60"/>
+            <maximum-size width="760" height="60"/>
           </grid>
         </constraints>
         <properties/>
@@ -60,20 +58,66 @@
       </grid>
       <component id="62369" class="javax.swing.JLabel" binding="left">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <enabled value="true"/>
+          <font name="Microsoft YaHei" size="72" style="1"/>
+          <foreground color="-16777048"/>
           <horizontalAlignment value="0"/>
           <horizontalTextPosition value="0"/>
           <text value="正方"/>
           <verticalAlignment value="0"/>
         </properties>
       </component>
-      <component id="89fd8" class="javax.swing.JLabel" binding="right">
+      <component id="88f72" class="javax.swing.JLabel" binding="thesis">
         <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
+          <font name="Microsoft YaHei" size="36" style="0"/>
+          <foreground color="-1"/>
+          <text value="论题"/>
+        </properties>
+      </component>
+      <component id="e0e8d" class="javax.swing.JLabel" binding="stage">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Microsoft YaHei" size="48" style="1"/>
+          <foreground color="-7368792"/>
+          <text value="第n辩:自由辩论"/>
+        </properties>
+      </component>
+      <component id="5d0cf" class="javax.swing.JLabel" binding="leftTime">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Microsoft YaHei" size="72" style="1"/>
+          <foreground color="-16777047"/>
+          <text value="05:00:00"/>
+        </properties>
+      </component>
+      <component id="27814" class="javax.swing.JLabel" binding="rightTime">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-1"/>
+          <font name="Microsoft YaHei" size="72" style="1"/>
+          <foreground color="-5701632"/>
+          <text value="05:00:00"/>
+        </properties>
+      </component>
+      <component id="89fd8" class="javax.swing.JLabel" binding="right">
+        <constraints>
+          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <font name="Microsoft YaHei" size="72" style="1"/>
+          <foreground color="-5701632"/>
           <horizontalAlignment value="0"/>
           <horizontalTextPosition value="0"/>
           <text value="反方"/>

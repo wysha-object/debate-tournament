@@ -2,12 +2,12 @@ package main;
 
 import data.Config;
 import data.Style;
-import main.views.DebatePage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashSet;
 
 /**
@@ -19,8 +19,6 @@ public class Edit extends JDialog {
     private JButton buttonCancel;
     private JPanel down;
     private JPanel up;
-    private JList<DebatePage> list;
-    private final ArrayList<DebatePage> debatePages=new ArrayList<>();
     public Edit(Config config) {
         setContentPane(contentPane);
         setModal(true);
@@ -52,7 +50,6 @@ public class Edit extends JDialog {
     }
 
     private void flush(){
-        list.setListData(debatePages.toArray(new DebatePage[0]));
     }
 
     public void setStyle() {
