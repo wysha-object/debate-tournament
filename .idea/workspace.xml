@@ -10,16 +10,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f675a37f-c18d-4824-8c49-41a3debb9bd6" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/debate_tournament_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/debate-tournament.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/debate-tournament.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/debate_tournament_jar/debate-tournament.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resource/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/Bout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/Bout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/views/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/views/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/views/Welcome.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/views/Welcome.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +69,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;工件&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15917969&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
@@ -136,6 +131,8 @@
       <workItem from="1701631720495" duration="257000" />
       <workItem from="1701631981865" duration="27000" />
       <workItem from="1701632010493" duration="28000" />
+      <workItem from="1701632041024" duration="404000" />
+      <workItem from="1701674585976" duration="2079000" />
     </task>
     <task id="LOCAL-00001" summary="1.0.0">
       <option name="closed" value="true" />
@@ -201,7 +198,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701630490597</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="1.0.0">
+      <option name="closed" value="true" />
+      <created>1701632235587</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701632235587</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

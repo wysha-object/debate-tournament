@@ -37,7 +37,7 @@ public class Welcome extends View {
 
     public Welcome() {
         super(Welcome.class.toString());
-        NecessaryData.necessaryData.configs.add(new Config("1","123正方l","456反方r","eee?", List.of(new Bout[]{new Bout("e",5,0)})));
+        NecessaryData.necessaryData.configs.add(new Config("1","123正方l","456反方r","eee?", List.of(new Bout[]{new Bout("e",0,20,5),new Bout("c",0,30,10)})));
         super.jPanel= contentPane;
         delete.setEnabled(false);
         edit.setEnabled(false);

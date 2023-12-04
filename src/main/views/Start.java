@@ -5,8 +5,11 @@ import data.Style;
 import main.Bout;
 import main.MainInterface;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.HashSet;
 
 public class Start extends View{
@@ -30,6 +33,7 @@ public class Start extends View{
     public void run(){
         new Thread(() ->{
             for (current = 0; current < Config.config.bouts.size(); current++) {
+                b=true;
                 Bout bout = Config.config.bouts.get(current);
                 stage.setText("第"+(current+1)+"辩:"+bout.name);
                 lm = bout.startM;
@@ -37,52 +41,100 @@ public class Start extends View{
                 ls = bout.startS;
                 rs = bout.startS;
                 stop.setEnabled(true);
-                while (true){
+                do {
+                    if (b) {
+                        if (ls <= 0) {
+                            lm--;
+                            ls = 60;
+                        }
+                        if (lm * 60 + ls-1 == (bout.startM * 60 + bout.startS) / 2) {
+                            try {
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
+                                clip.start();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        ls -= 1;
+                        if (lm <= 0 && (ls == 0||!b)) {
+                            if (stop.isEnabled()){
+                                stop.setEnabled(false);
+                                lm = 0;
+                                ls = 0;
+                                b = false;
+                            }
+                            try {
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Alarm04.wav")));
+                                clip.start();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        if (rs <= 0) {
+                            rm--;
+                            rs = 60;
+                        }
+                        if (rm * 60 + rs-1 == (bout.startM * 60 + bout.startS) / 2) {
+                            try {
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
+                                clip.start();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        rs -= 1;
+                        if (rm <= 0 && (rs == 0||b)) {
+                            if (stop.isEnabled()){
+                                stop.setEnabled(false);
+                                rm = 0;
+                                rs = 0;
+                                b = true;
+                            }
+                            try {
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Alarm04.wav")));
+                                clip.start();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    leftTime.setText(lm + ":" + ls);
+                    rightTime.setText(rm + ":" + rs);
+                    MainInterface.mainInterface.repaint();
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                    if (b){
-                        if (ls<=0){
-                            lm--;
-                            ls=60;
+                } while ((lm > 0 || ls > 0) || (rm > 0 || rs > 0));
+                if(current==Config.config.bouts.size()-1){
+                    for (int i=bout.waitTime;i>=0;i--){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
                         }
-                        ls-=1;
-                        if (stop.isEnabled()&&lm<=0&&ls<=0){
-                            stop.setEnabled(false);
-                            lm=0;
-                            ls=0;
-                            b=(rm<=0&&rs<=0);
-                        }
-                    }else {
-                        if (rs<=0){
-                            rm--;
-                            rs=60;
-                        }
-                        rs-=1;
-                        if (stop.isEnabled()&&rm<=0&&rs<=0){
-                            stop.setEnabled(false);
-                            rm=0;
-                            rs=0;
-                            b= true;
-                        }
+                        stage.setText("本次辩论赛即将结束:"+i);
+                        MainInterface.mainInterface.repaint();
                     }
-                    leftTime.setText(lm+":"+ ls);
-                    rightTime.setText(rm+":"+ rs);
-                    MainInterface.mainInterface.repaint();
-                    if ((lm<=0&&ls<=0)&&(rm<=0&&rs<=0)){
-                        break;
+                }else {
+                    for (int i= bout.waitTime;i>=0;i--){
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        stage.setText("即将进入下一阶段:"+i);
+                        MainInterface.mainInterface.repaint();
                     }
-                }
-                stage.setText("即将进入下一阶段");
-                MainInterface.mainInterface.repaint();
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
                 }
             }
+            MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.welcome);
         }).start();
     }
     public Start() {
