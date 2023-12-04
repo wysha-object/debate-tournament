@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="debate-tournament">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/out/artifacts/debate_tournament_jar/debate-tournament.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
