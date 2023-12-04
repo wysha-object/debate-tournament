@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="debate-tournament:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/debate_tournament_jar</output-path>
-    <root id="archive" name="debate-tournament.jar">
-      <element id="module-output" name="debate-tournament" />
-    </root>
-  </artifact>
-</component>
