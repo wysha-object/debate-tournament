@@ -24,6 +24,7 @@ public class BoutEdit extends JDialog {
     private JTextField textField1;
 
     public BoutEdit(Bout bout) {
+        setUndecorated(true);
         setContentPane(contentPane);
         setModal(true);
         if (bout!=null){

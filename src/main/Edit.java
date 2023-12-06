@@ -41,6 +41,7 @@ public class Edit extends JDialog {
     private JLabel jLabel;
 
     public Edit(Config config) {
+        setUndecorated(true);
         if (config!=null){
             bouts=new ArrayList<>(config.bouts());
             setPros.setText(config.prosName());
@@ -68,6 +69,12 @@ public class Edit extends JDialog {
                 delete.setEnabled(true);
                 edit.setEnabled(false);
             }
+        });
+        delete.addActionListener(e -> {
+            for(Bout bout:current){
+                bouts.remove(bout);
+            }
+            flush();
         });
         getRootPane().setDefaultButton(buttonOkay);
 
