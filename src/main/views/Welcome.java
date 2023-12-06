@@ -3,7 +3,6 @@ package main.views;
 import data.Config;
 import data.NecessaryData;
 import data.Style;
-import main.Bout;
 import main.Edit;
 import main.MainInterface;
 import tools.ErrorInterface;
@@ -17,7 +16,6 @@ import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * @author wysha
@@ -37,7 +35,6 @@ public class Welcome extends View {
 
     public Welcome() {
         super(Welcome.class.toString());
-        NecessaryData.necessaryData.configs.add(new Config("1","123正方l","456反方r","eee?", List.of(new Bout[]{new Bout("e",0,20,5),new Bout("c",0,30,10)})));
         super.jPanel= contentPane;
         delete.setEnabled(false);
         edit.setEnabled(false);
@@ -70,8 +67,8 @@ public class Welcome extends View {
         });
         flush();
         add.addActionListener(e -> {
+            new Edit(null).setVisible(true);
             flush();
-            new Edit(null);
         });
         delete.addActionListener(e -> {
             for(Config config:current){
@@ -80,8 +77,8 @@ public class Welcome extends View {
             flush();
         });
         edit.addActionListener(e -> {
+            new Edit(list.getSelectedValue()).setVisible(true);
             flush();
-            new Edit(list.getSelectedValue());
         });
         in.addActionListener(e -> {
             JFileChooser jFileChooser=new JFileChooser();
@@ -106,7 +103,7 @@ public class Welcome extends View {
                                                 )
                                         ).readObject();
                         for (Config f : NecessaryData.necessaryData.configs) {
-                            if (f.name.equals(abstractFunction.name)) {
+                            if (f.name().equals(abstractFunction.name())) {
                                 throw new RuntimeException("列表中已有同名配置");
                             }
                         }
@@ -134,7 +131,7 @@ public class Welcome extends View {
                 try {
                     for (Config config : current) {
                         new ObjectOutputStream(
-                                Files.newOutputStream(Paths.get(jFileChooser.getSelectedFile().getPath() + "\\" + config.name + ".DeBateConfig"))
+                                Files.newOutputStream(Paths.get(jFileChooser.getSelectedFile().getPath() + "\\" + config.name() + ".DeBateConfig"))
                         ).writeObject(config);
                     }
                     ProcessBuilder processBuilder = new ProcessBuilder("explorer", jFileChooser.getSelectedFile().getPath());

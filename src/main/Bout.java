@@ -1,14 +1,30 @@
 package main;
 
-public class Bout {
-    public final String name;
-    public final int startM;
-    public final int startS;
-    public final int waitTime;
-    public Bout(String name, int startM, int startS, int waitTime) {
-        this.name = name;
-        this.startM = startM;
-        this.startS = startS;
-        this.waitTime = waitTime;
+import java.io.Serializable;
+
+/**
+ * @author wysha
+ */
+public record Bout(String name, int startM, int startS, int waitTime) implements Serializable {
+    @Override
+    public String name() {
+        return name;
+    }
+    @Override
+    public int startM() {
+        return startM;
+    }
+    @Override
+    public int startS() {
+        return startS;
+    }
+    @Override
+    public int waitTime() {
+        return waitTime;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

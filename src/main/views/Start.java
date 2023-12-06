@@ -12,6 +12,9 @@ import java.awt.*;
 import java.io.File;
 import java.util.HashSet;
 
+/**
+ * @author wysha
+ */
 public class Start extends View{
     int current;
     private JPanel pane;
@@ -26,81 +29,65 @@ public class Start extends View{
     private JLabel leftTime;
     private JLabel rightTime;
     private boolean b;
-    private int lm;
-    private int ls;
-    private int rm;
-    private int rs;
+    private static class I{
+        int i;
+        @Override
+        public String toString() {
+            return String.valueOf(i);
+        }
+    }
+    private final I lm= new I();
+    private final I ls= new I();
+    private final I rm= new I();
+    private final I rs= new I();
     public void run(){
         new Thread(() ->{
-            for (current = 0; current < Config.config.bouts.size(); current++) {
+            for (current = 0; current < Config.config.bouts().size(); current++) {
                 b=true;
-                Bout bout = Config.config.bouts.get(current);
-                stage.setText("第"+(current+1)+"辩:"+bout.name);
-                lm = bout.startM;
-                rm = bout.startM;
-                ls = bout.startS;
-                rs = bout.startS;
+                Bout bout = Config.config.bouts().get(current);
+                stage.setText("第"+(current+1)+"辩:"+bout.name());
+                lm.i = bout.startM();
+                rm.i = bout.startM();
+                ls.i = bout.startS();
+                rs.i = bout.startS();
                 stop.setEnabled(true);
                 do {
-                    if (b) {
-                        if (ls <= 0) {
-                            lm--;
-                            ls = 60;
+                    I m;
+                    I s;
+                    if (b){
+                        m=lm;
+                        s=ls;
+                    }else {
+                        m=rm;
+                        s=rs;
+                    }
+                    if (s.i <= 0) {
+                        m.i--;
+                        s.i = 60;
+                    }
+                    if (m.i * 60 + s.i-1 == (bout.startM() * 60 + bout.startS()) / 2) {
+                        try {
+                            Clip clip = AudioSystem.getClip();
+                            clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
+                            clip.start();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
-                        if (lm * 60 + ls-1 == (bout.startM * 60 + bout.startS) / 2) {
-                            try {
-                                Clip clip = AudioSystem.getClip();
-                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
-                                clip.start();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
+                    }
+                    s.i -= 1;
+                    if (m.i <= 0 && s.i <= 0) {
+                        if (stop.isEnabled()){
+                            stop.setEnabled(false);
+                            m.i = 0;
+                            s.i = 0;
+                            b = !b;
                         }
-                        ls -= 1;
-                        if (lm <= 0 && (ls == 0||!b)) {
-                            if (stop.isEnabled()){
-                                stop.setEnabled(false);
-                                lm = 0;
-                                ls = 0;
-                                b = false;
-                            }
-                            try {
-                                Clip clip = AudioSystem.getClip();
-                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Alarm04.wav")));
-                                clip.start();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    } else {
-                        if (rs <= 0) {
-                            rm--;
-                            rs = 60;
-                        }
-                        if (rm * 60 + rs-1 == (bout.startM * 60 + bout.startS) / 2) {
-                            try {
-                                Clip clip = AudioSystem.getClip();
-                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
-                                clip.start();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                        rs -= 1;
-                        if (rm <= 0 && (rs == 0||b)) {
-                            if (stop.isEnabled()){
-                                stop.setEnabled(false);
-                                rm = 0;
-                                rs = 0;
-                                b = true;
-                            }
-                            try {
-                                Clip clip = AudioSystem.getClip();
-                                clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Alarm04.wav")));
-                                clip.start();
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
+                        try {
+                            Clip clip = AudioSystem.getClip();
+                            clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Alarm04.wav")));
+                            clip.start();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
                     }
                     leftTime.setText(lm + ":" + ls);
@@ -111,9 +98,9 @@ public class Start extends View{
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
-                } while ((lm > 0 || ls > 0) || (rm > 0 || rs > 0));
-                if(current==Config.config.bouts.size()-1){
-                    for (int i=bout.waitTime;i>=0;i--){
+                } while ((lm.i > 0 || ls.i > 0) || (rm.i > 0 || rs.i > 0));
+                if(current==Config.config.bouts().size()-1){
+                    for (int i=bout.waitTime();i>=0;i--){
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -123,7 +110,7 @@ public class Start extends View{
                         MainInterface.mainInterface.repaint();
                     }
                 }else {
-                    for (int i= bout.waitTime;i>=0;i--){
+                    for (int i= bout.waitTime();i>=0;i--){
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -146,9 +133,9 @@ public class Start extends View{
     @Override
     public void flush(){
         super.flush();
-        left.setText("正方:"+ Config.config.prosName);
-        right.setText("反方:"+ Config.config.consName);
-        thesis.setText(Config.config.thesis);
+        left.setText("正方:"+ Config.config.prosName());
+        right.setText("反方:"+ Config.config.consName());
+        thesis.setText(Config.config.thesis());
     }
 
     @Override

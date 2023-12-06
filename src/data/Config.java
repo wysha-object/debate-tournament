@@ -6,28 +6,46 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
+ * @param prosName 正方名
+ * @param consName 反方名
  * @author wysha
  */
-public class Config implements Serializable {
-    public static Config config;
-    public final String name;
-    public final String prosName;
-    public final String consName;
-    public final String thesis;
-    public final List<Bout> bouts;
-
-    public Config(String name, String prosName, String consName, String thesis, List<Bout> bouts) {
-        this.name = name;
-        this.prosName = prosName;
-        this.consName = consName;
-        this.thesis = thesis;
-        this.bouts = bouts;
+public record Config(
+        String name,
+        String prosName,
+        String consName,
+        String thesis,
+        List<Bout> bouts
+) implements Serializable {
+    @Override
+    public String name() {
+        return name;
     }
 
     @Override
+    public String prosName() {
+        return prosName;
+    }
+
+    @Override
+    public String consName() {
+        return consName;
+    }
+
+    @Override
+    public String thesis() {
+        return thesis;
+    }
+
+    @Override
+    public List<Bout> bouts() {
+        return bouts;
+    }
+
+    public static Config config;
+
+    @Override
     public String toString() {
-        StringBuilder stringBuilder=new StringBuilder();
-        stringBuilder.append(name);
-        return stringBuilder.toString();
+        return name;
     }
 }

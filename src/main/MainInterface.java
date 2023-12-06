@@ -53,7 +53,14 @@ public class MainInterface extends JFrame {
             Thread.sleep(1);
             setOpacity(i);
         }
-        exit.addActionListener(e -> System.exit(0));
+        exit.addActionListener(e -> {
+            try {
+                NecessaryData.necessaryData.write();
+            } catch (Throwable ex) {
+                System.exit(1);
+            }
+            System.exit(0);
+        });
         set.addActionListener(e -> {
             NecessarySet necessarySet=new NecessarySet();
             necessarySet.setVisible(true);
