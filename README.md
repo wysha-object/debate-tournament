@@ -13,7 +13,8 @@ Windows 11
 IDEA
 
 ## 安装教程
-jar包在out/artifacts目录下
+jar包在out/artifacts目录下,运行时需要resource文件夹<br/>
+运行时需要将resource置于运行目录下
 
 ## 文件上传要求
 提交信息必须包含版本号,每次上传必须更新版本号,以便标识
