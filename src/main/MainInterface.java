@@ -74,6 +74,7 @@ public class MainInterface extends JFrame {
     }
 
     public void flush(){
+        repaint();
         setStyle();
         current.flush();
     }
