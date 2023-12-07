@@ -57,7 +57,7 @@ public class Start extends View{
                 Bout bout = Config.config.bouts().get(current);
                 t=new Thread(()->{
                     next.setVisible(true);
-                    stage.setText("第"+(current+1)+"辩:"+bout.name());
+                    stage.setText("第"+(current+1)+"辩" + (!bout.name().isEmpty() ?":"+bout.name():"") + "    ");
                     lm.i = bout.startM();
                     rm.i = bout.startM();
                     ls.i = bout.startS();

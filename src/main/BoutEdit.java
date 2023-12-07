@@ -4,8 +4,11 @@ import data.Style;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * @author wysha
@@ -22,8 +25,9 @@ public class BoutEdit extends JDialog {
     private JLabel l3;
     private JLabel l4;
     private JTextField textField1;
-
-    public BoutEdit(Bout bout) {
+    private final List<Bout> bouts;
+    public BoutEdit(Bout bout, List<Bout> bouts) {
+        this.bouts=bouts;
         setUndecorated(true);
         setContentPane(contentPane);
         setModal(true);
@@ -65,7 +69,8 @@ public class BoutEdit extends JDialog {
                 textField1.getText(),
                 (int) setSS.getValue()/60,
                 (int) setSS.getValue()%60,
-                (int) setWT.getValue()
+                (int) setWT.getValue(),
+                bouts
         );
     }
 

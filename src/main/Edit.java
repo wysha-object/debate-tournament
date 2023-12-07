@@ -41,6 +41,7 @@ public class Edit extends JDialog {
     private JLabel jLabel;
 
     public Edit(Config config) {
+        setName.setText("配置");
         setUndecorated(true);
         if (config!=null){
             bouts=new ArrayList<>(config.bouts());
@@ -100,13 +101,13 @@ public class Edit extends JDialog {
         setLocationRelativeTo(null);
         flush();
         add.addActionListener(e -> {
-           BoutEdit boutEdit=new BoutEdit(null);
+           BoutEdit boutEdit=new BoutEdit(null,this.bouts);
            boutEdit.setVisible(true);
            bouts.add(boutEdit.getValue());
            flush();
         });
         edit.addActionListener(e -> {
-            BoutEdit boutEdit=new BoutEdit(current[0]);
+            BoutEdit boutEdit=new BoutEdit(current[0],this.bouts);
             boutEdit.setVisible(true);
             bouts.add(boutEdit.getValue());
             flush();

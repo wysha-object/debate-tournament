@@ -46,6 +46,6 @@ public record Config(
 
     @Override
     public String toString() {
-        return name;
+        return name+"           论题:"+thesis+"           包含回合数:"+bouts.size();
     }
 }
