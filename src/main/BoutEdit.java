@@ -8,12 +8,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * @author wysha
  */
 public class BoutEdit extends JDialog {
+    public Bout value;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -25,16 +26,16 @@ public class BoutEdit extends JDialog {
     private JLabel l3;
     private JLabel l4;
     private JTextField textField1;
-    private final List<Bout> bouts;
-    public BoutEdit(Bout bout, List<Bout> bouts) {
+    private final LinkedList<Bout> bouts;
+    public BoutEdit(Bout bout, LinkedList<Bout> bouts) {
         this.bouts=bouts;
         setUndecorated(true);
         setContentPane(contentPane);
         setModal(true);
         if (bout!=null){
             textField1.setText(bout.name());
-            setSS.setValue(bout.startM()*60+bout.startS());
-            setWT.setValue(bout.waitTime());
+            setSS.setValue(bout.start());
+            setWT.setValue(bout.finishedWaitTime());
         }
         getRootPane().setDefaultButton(buttonOK);
 
@@ -61,17 +62,14 @@ public class BoutEdit extends JDialog {
     }
 
     private void onOK() {
-        // 在此处添加您的代码
-        dispose();
-    }
-    public Bout getValue(){
-        return new Bout(
+        value= new Bout(
                 textField1.getText(),
-                (int) setSS.getValue()/60,
-                (int) setSS.getValue()%60,
+                (int) setSS.getValue(),
                 (int) setWT.getValue(),
                 bouts
         );
+        // 在此处添加您的代码
+        dispose();
     }
 
     private void flush(){
@@ -82,7 +80,6 @@ public class BoutEdit extends JDialog {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
         HashSet<JList<?>> lists=new HashSet<>();
-        jPanels.add(contentPane);
         jPanels.add(up);
         jPanels.add(down);
         buttons.add(buttonCancel);

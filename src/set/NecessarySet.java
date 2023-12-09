@@ -1,7 +1,7 @@
 
 package set;
 
-import data.NecessaryData;
+import data.DebateNecessaryData;
 import data.Style;
 import tools.ErrorInterface;
 
@@ -21,6 +21,7 @@ public class NecessarySet extends Set {
     private JPanel down;
 
     public NecessarySet() {
+        setUndecorated(true);
         super.show = right;
         setContentPane(contentPane);
         right.setLayout(cardLayout);
@@ -35,7 +36,7 @@ public class NecessarySet extends Set {
             if (current!=defaultPage){
                 current.onOkay();
                 try {
-                    NecessaryData.necessaryData.write();
+                    DebateNecessaryData.deBateNecessaryData.write();
                 } catch (Throwable e) {
                     new ErrorInterface(
                             "写入失败",
@@ -59,7 +60,6 @@ public class NecessarySet extends Set {
     public void setStyle() {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
-        jPanels.add(contentPane);
         jPanels.add(up);
         jPanels.add(down);
         jPanels.add(right);

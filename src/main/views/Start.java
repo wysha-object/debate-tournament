@@ -36,49 +36,70 @@ public class Start extends View{
     private JButton finish;
     private JButton jump;
     private JButton go;
+    private JPanel center;
     private boolean b;
     private Thread t;
     private static class I{
-        int i;
+        long i;
         @Override
         public String toString() {
             return String.valueOf(i);
         }
     }
-    private final I lm= new I();
     private final I ls= new I();
-    private final I rm= new I();
     private final I rs= new I();
+    private I s;
+    private long currentTimeMillis;
     public void run(){
         thread= new Thread(() ->{
             go.setEnabled(false);
             for (current = 0; current < Config.config.bouts().size(); current++) {
                 b=true;
                 Bout bout = Config.config.bouts().get(current);
+                stage.setText("第"+(current+1)+"辩" + (!bout.name().isEmpty() ?":"+bout.name():""));
+                currentTimeMillis=System.currentTimeMillis();
+                ls.i = bout.start()* 1000L;
+                rs.i = bout.start()* 1000L;
+                next.setEnabled(true);
+                flush();
                 t=new Thread(()->{
-                    next.setVisible(true);
-                    stage.setText("第"+(current+1)+"辩" + (!bout.name().isEmpty() ?":"+bout.name():"") + "   ");
-                    lm.i = bout.startM();
-                    rm.i = bout.startM();
-                    ls.i = bout.startS();
-                    rs.i = bout.startS();
-                    next.setEnabled(true);
-                    flush();
+                    center.setVisible(true);
                     do {
-                        I m;
-                        I s;
+                        I n;
                         if (b){
-                            m=lm;
-                            s=ls;
+                            n=ls;
                         }else {
-                            m=rm;
-                            s=rs;
+                            n=rs;
                         }
-                        if (s.i <= 0) {
-                            m.i--;
-                            s.i = 60;
+                        if (s!=n){
+                            currentTimeMillis=System.currentTimeMillis();
                         }
-                        if (m.i * 60 + s.i-1 == (bout.startM() * 60 + bout.startS()) / 2) {
+                        s=n;
+
+                        for (int i=0;i<2;i++){
+                            boolean b=i==0;
+                            n=b?ls:rs;
+                            JLabel jLabel=b?leftTime:rightTime;
+                            long l=n.i / 60000;
+
+                            StringBuilder m= new StringBuilder();
+                            m.append(l);
+                            m.insert(0,"0".repeat(2 - m.length()));
+
+                            StringBuilder s=new StringBuilder();
+                            s.append(n.i / 1000 - l * 60);
+                            s.insert(0,"0".repeat(2 - s.length()));
+
+                            StringBuilder ms=new StringBuilder();
+                            ms.append(n.i % 1000);
+                            ms.append("0".repeat(3 - ms.length()));
+
+                            jLabel.setText(m+":"+s+"."+ms);
+                        }
+
+                        s.i=s.i-(System.currentTimeMillis()-currentTimeMillis);
+                        currentTimeMillis=System.currentTimeMillis();
+                        if (s.i == bout.start()* 1000L / 2) {
                             try {
                                 Clip clip = AudioSystem.getClip();
                                 clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
@@ -87,12 +108,10 @@ public class Start extends View{
                                 throw new RuntimeException(e);
                             }
                         }
-                        s.i -= 1;
-                        if (m.i <= 0 && s.i <= 0) {
+                        if (s.i <= 0) {
+                            s.i = 0;
                             if (next.isEnabled()){
                                 next.setEnabled(false);
-                                m.i = 0;
-                                s.i = 0;
                                 b = !b;
                             }
                             try {
@@ -103,15 +122,10 @@ public class Start extends View{
                                 throw new RuntimeException(e);
                             }
                         }
-                        leftTime.setText(lm + ":" + ls);
-                        rightTime.setText(rm + ":" + rs);
-                        MainInterface.mainInterface.repaint();
-                        try {
-                            sleep(1000);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
-                        }
-                    } while (lm.i >= 0&&ls.i >= 0&&rm.i >= 0&&rs.i >= 0&&lm.i+ls.i+rm.i+rs.i>0);
+                    } while (ls.i >= 0&&rs.i >= 0&&ls.i+rs.i>0);
+                    leftTime.setText("00:00.000");
+                    rightTime.setText("00:00.000");
+
                 });
                 t.start();
                 while (t.isAlive()){
@@ -122,15 +136,12 @@ public class Start extends View{
                     }
                 }
                 t=new Thread(()->{
-                    next.setVisible(false);
+                    center.setVisible(false);
                     leftTime.setText("");
                     rightTime.setText("");
-                    next.setEnabled(false);
-                    flush();
                     String s=current==Config.config.bouts().size()-1?"本次辩论赛即将结束:":"即将进入下一阶段:";
-                    for (int i= bout.waitTime();i>=0;i--){
-                        stage.setText(s+i+"    ");
-                        MainInterface.mainInterface.repaint();
+                    for (int i = bout.finishedWaitTime(); i>=0; i--){
+                        stage.setText(s+i);
                         try {
                             sleep(1000);
                         } catch (InterruptedException e) {
@@ -153,7 +164,7 @@ public class Start extends View{
     }
     public Start() {
         super(Start.class.toString());
-        super.jPanel=pane;
+        super.centerPanel =pane;
         setStyle();
         next.addActionListener(e -> b = !b);
         stop.addActionListener(e -> {
@@ -172,7 +183,6 @@ public class Start extends View{
             thread.stop();
             t.stop();
             MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.welcome);
-            MainInterface.mainInterface.repaint();
         });
         jump.addActionListener(e -> t.stop());
     }
@@ -182,7 +192,6 @@ public class Start extends View{
         left.setText("正方:"+ Config.config.prosName());
         right.setText("反方:"+ Config.config.consName());
         thesis.setText(Config.config.thesis());
-        MainInterface.mainInterface.repaint();
     }
 
     @Override
@@ -191,7 +200,6 @@ public class Start extends View{
         HashSet<JComponent> buttons = new HashSet<>();
         jPanels.add(pane);
         jPanels.add(vs);
-        jPanels.add(down);
         buttons.add(finish);
         buttons.add(stop);
         buttons.add(jump);
@@ -202,9 +210,18 @@ public class Start extends View{
     private void createUIComponents() {
         // TODO: place custom component creation code here
         pane=new JPanel(){
-            private final Image image = new ImageIcon("").getImage();
             protected void paintComponent(Graphics g) {
-                g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
+                g.drawImage(null, 0, 0, this.getWidth(), this.getHeight(), this);
+            }
+        };
+        center=new JPanel(){
+            protected void paintComponent(Graphics g) {
+                g.drawImage(null, 0, 0, this.getWidth(), this.getHeight(), this);
+            }
+        };
+        down=new JPanel(){
+            protected void paintComponent(Graphics g) {
+                g.drawImage(null, 0, 0, this.getWidth(), this.getHeight(), this);
             }
         };
         l=new JPanel(){

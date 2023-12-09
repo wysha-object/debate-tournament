@@ -3,7 +3,7 @@ package data;
 import main.Bout;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.LinkedList;
 
 /**
  * @param prosName 正方名
@@ -15,7 +15,7 @@ public record Config(
         String prosName,
         String consName,
         String thesis,
-        List<Bout> bouts
+        LinkedList<Bout> bouts
 ) implements Serializable {
     @Override
     public String name() {
@@ -38,7 +38,7 @@ public record Config(
     }
 
     @Override
-    public List<Bout> bouts() {
+    public LinkedList<Bout> bouts() {
         return bouts;
     }
 

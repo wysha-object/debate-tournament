@@ -1,7 +1,7 @@
 package main;
 
 import data.Config;
-import data.NecessaryData;
+import data.DebateNecessaryData;
 import data.Style;
 
 import javax.swing.*;
@@ -9,15 +9,15 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * @author wysha
  */
 public class Edit extends JDialog {
     private Bout[] current;
-    ArrayList<Bout> bouts=new ArrayList<>();
+    LinkedList<Bout> bouts=new LinkedList<>();
     private JPanel contentPane;
     private JButton buttonOkay;
     private JButton buttonCancel;
@@ -39,28 +39,50 @@ public class Edit extends JDialog {
     private JPanel up;
     private JTextField setName;
     private JLabel jLabel;
+    private JButton upMove;
+    private JButton downMove;
 
     public Edit(Config config) {
         setName.setText("配置");
         setUndecorated(true);
         if (config!=null){
-            bouts=new ArrayList<>(config.bouts());
+            bouts=new LinkedList<>(config.bouts());
+            for (int i = 0, boutsSize = bouts.size(); i < boutsSize; i++) {
+                Bout bout = bouts.get(i);
+                bouts.remove(i);
+                bouts.add(
+                        i,
+                        new Bout(
+                        bout.name(),
+                        bout.start(),
+                        bout.finishedWaitTime(),
+                        bouts
+                ));
+            }
             setPros.setText(config.prosName());
             setCons.setText(config.consName());
             setName.setText(config.name());
             textField1.setText(config.thesis());
         }
+        delete.setEnabled(false);
+        edit.setEnabled(false);
+        upMove.setEnabled(false);
+        downMove.setEnabled(false);
         setContentPane(contentPane);
         setModal(true);
         list.addListSelectionListener(e -> {
             if (list.getSelectedIndex() == -1) {
                 delete.setEnabled(false);
                 edit.setEnabled(false);
+                upMove.setEnabled(false);
+                downMove.setEnabled(false);
             } else if (list.getSelectedIndices().length==1){
                 current = new Bout[1];
                 current[0] = list.getSelectedValue();
                 delete.setEnabled(true);
                 edit.setEnabled(true);
+                upMove.setEnabled(true);
+                downMove.setEnabled(true);
             }else {
                 current = new Bout[list.getSelectedIndices().length];
                 int[] selectedIndices = list.getSelectedIndices();
@@ -69,6 +91,8 @@ public class Edit extends JDialog {
                 }
                 delete.setEnabled(true);
                 edit.setEnabled(false);
+                upMove.setEnabled(true);
+                downMove.setEnabled(true);
             }
         });
         delete.addActionListener(e -> {
@@ -103,27 +127,54 @@ public class Edit extends JDialog {
         add.addActionListener(e -> {
            BoutEdit boutEdit=new BoutEdit(null,this.bouts);
            boutEdit.setVisible(true);
-           bouts.add(boutEdit.getValue());
+            if (boutEdit.value!=null){
+                bouts.add(boutEdit.value);
+            }
            flush();
         });
         edit.addActionListener(e -> {
             BoutEdit boutEdit=new BoutEdit(current[0],this.bouts);
             boutEdit.setVisible(true);
-            bouts.add(boutEdit.getValue());
+            if (boutEdit.value!=null){
+                bouts.add(boutEdit.value);
+            }
+            flush();
+        });
+        upMove.addActionListener(e -> {
+            for (Bout bout:current){
+                for (int i=0;i<bouts.size();i++){
+                    if (bout==bouts.get(i)&&i-1>0){
+                        bouts.remove(i);
+                        bouts.add(i-1,bout);
+                        break;
+                    }
+                }
+            }
+            flush();
+        });
+        downMove.addActionListener(e -> {
+            for (Bout bout:current){
+                for (int i=0;i<bouts.size();i++){
+                    if (bout==bouts.get(i)&&i+1<bouts.size()){
+                        bouts.remove(i);
+                        bouts.add(i+1,bout);
+                        break;
+                    }
+                }
+            }
             flush();
         });
     }
 
     private void flush(){
         setStyle();
-        list.setListData( bouts.toArray(new Bout[0]));
+        list.setListData(bouts.toArray(new Bout[0]));
     }
 
     public void setStyle() {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
         HashSet<JList<?>> lists=new HashSet<>();
-        jPanels.add(contentPane);
         jPanels.add(l);
         jPanels.add(r);
         jPanels.add(down);
@@ -143,12 +194,14 @@ public class Edit extends JDialog {
         buttons.add(edit);
         buttons.add(delete);
         buttons.add(jLabel);
+        buttons.add(upMove);
+        buttons.add(downMove);
         lists.add(list);
         Style.setStyle(jPanels,buttons,lists);
     }
 
     private void onOkay() {
-        NecessaryData.necessaryData.configs.add(new Config(
+        DebateNecessaryData.deBateNecessaryData.configs.add(new Config(
                 setName.getText(),
                 setPros.getText(),
                 setCons.getText(),

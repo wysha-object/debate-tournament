@@ -18,6 +18,7 @@ public class Prompt extends JDialog {
     private JScrollPane jScrollPane;
 
     public Prompt(String prompt) {
+        setUndecorated(true);
         jTextArea.setLineWrap(true);
         jTextArea.setWrapStyleWord(true);
         jTextArea.setEditable(false);
@@ -28,7 +29,10 @@ public class Prompt extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setStyle();
         setAlwaysOnTop(true);
-        setSize((int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 3, (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 3);
+        setSize(
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
+        );
         setLocationRelativeTo(null);
         buttonOkay.addActionListener(e -> onOkay());
         contentPane.registerKeyboardAction(e -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -38,7 +42,6 @@ public class Prompt extends JDialog {
     public void setStyle() {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
-        jPanels.add(contentPane);
         jPanels.add(jScrollPane);
         buttons.add(buttonOkay);
         buttons.add(jTextArea);

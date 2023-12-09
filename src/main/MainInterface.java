@@ -1,6 +1,6 @@
 package main;
 
-import data.NecessaryData;
+import data.DebateNecessaryData;
 import data.Style;
 import main.views.Start;
 import main.views.View;
@@ -10,6 +10,8 @@ import set.NecessarySet;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
+
+import static java.lang.Thread.sleep;
 
 /**
  * @author wysha
@@ -34,9 +36,8 @@ public class MainInterface extends JFrame {
     private JButton set;
     private JButton exit;
     private JButton flush;
-
+    Thread thread;
     public MainInterface() throws Throwable {
-        setContentPane(contentPane);
         mainInterface=this;
         setUndecorated(true);
         setSize(
@@ -44,18 +45,51 @@ public class MainInterface extends JFrame {
                 (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
         );
         show.setLayout(cardLayout);
-        show.add(welcome.jPanel, welcome.viewName);
-        show.add(start.jPanel,start.viewName);
-        setCurrent(welcome);
-        flush();
-        setVisible(true);
+        JFrame jFrame=new JFrame();
+        JPanel jPanel=new JPanel();
+        JLabel jLabel=new JLabel("开发者:熊锦枫",JLabel.CENTER);
+        JLabel mail=new JLabel("开发者邮箱:wyshazhisishen@yeah.net",JLabel.CENTER);
+        jLabel.setFont(new Font("微软雅黑",Font.PLAIN,72));
+        mail.setFont(new Font("微软雅黑",Font.PLAIN,72));
+        GridLayout gridLayout=new GridLayout(2,1);
+        jPanel.setLayout(gridLayout);
+        jPanel.add(jLabel,BorderLayout.NORTH);
+        jPanel.add(mail,BorderLayout.SOUTH);
+        jFrame.add(jPanel);
+        jPanel.setBackground(Color.BLACK);
+        jLabel.setForeground(Color.WHITE);
+        mail.setForeground(Color.WHITE);
+        jFrame.setUndecorated(true);
+        jFrame.setSize(
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
+        );
+        jFrame.setVisible(true);
+        jFrame.setAlwaysOnTop(true);
         for (float i=0;i<1;i+= 0.001F){
-            Thread.sleep(1);
-            setOpacity(i);
+            sleep(1);
+            jFrame.setOpacity(i);
         }
+        sleep(1000);
+        setVisible(true);
+        thread=new Thread(() -> {
+            while(true) {
+                MainInterface.mainInterface.flush();
+            }
+        });
+        thread.start();
+        setContentPane(contentPane);
+        show.add(welcome.centerPanel, welcome.viewName);
+        show.add(start.centerPanel,start.viewName);
+        setCurrent(welcome);
+        for (float i=1;i>0;i-= 0.001F){
+            sleep(1);
+            jFrame.setOpacity(i);
+        }
+        jFrame.dispose();
         exit.addActionListener(e -> {
             try {
-                NecessaryData.necessaryData.write();
+                DebateNecessaryData.deBateNecessaryData.write();
             } catch (Throwable ex) {
                 System.exit(1);
             }
@@ -66,17 +100,27 @@ public class MainInterface extends JFrame {
             necessarySet.setVisible(true);
             flush();
         });
-        flush.addActionListener(e -> flush());
+        flush.addActionListener(e -> {
+            thread.stop();
+            thread=new Thread(() -> {
+                while(true) {
+                    MainInterface.mainInterface.flush();
+                }
+            });
+            thread.start();
+        });
     }
     public static void main(String[] args) throws Throwable {
-        NecessaryData.necessaryData.read();
+        DebateNecessaryData.deBateNecessaryData.read();
         new MainInterface();
     }
 
-    public void flush(){
-        repaint();
+    private void flush(){
         setStyle();
-        current.flush();
+        repaint();
+        if (current!=null){
+            current.centerPanel.repaint();
+        }
     }
 
     public void setStyle() {

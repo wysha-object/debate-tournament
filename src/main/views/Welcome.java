@@ -1,21 +1,23 @@
 package main.views;
 
 import data.Config;
-import data.NecessaryData;
+import data.DebateNecessaryData;
 import data.Style;
+import main.Bout;
 import main.Edit;
 import main.MainInterface;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import tools.ErrorInterface;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.FileWriter;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * @author wysha
@@ -35,7 +37,7 @@ public class Welcome extends View {
 
     public Welcome() {
         super(Welcome.class.toString());
-        super.jPanel= contentPane;
+        super.centerPanel = contentPane;
         delete.setEnabled(false);
         edit.setEnabled(false);
         out.setEnabled(false);
@@ -57,7 +59,7 @@ public class Welcome extends View {
                 current = new Config[list.getSelectedIndices().length];
                 int[] selectedIndices = list.getSelectedIndices();
                 for (int j = 0; j < selectedIndices.length; j++) {
-                    current[j] = NecessaryData.necessaryData.configs.get(j);
+                    current[j] = DebateNecessaryData.deBateNecessaryData.configs.get(j);
                 }
                 delete.setEnabled(true);
                 edit.setEnabled(false);
@@ -72,7 +74,7 @@ public class Welcome extends View {
         });
         delete.addActionListener(e -> {
             for(Config config:current){
-                NecessaryData.necessaryData.configs.remove(config);
+                DebateNecessaryData.deBateNecessaryData.configs.remove(config);
             }
             flush();
         });
@@ -82,8 +84,8 @@ public class Welcome extends View {
         });
         in.addActionListener(e -> {
             JFileChooser jFileChooser=new JFileChooser();
-            jFileChooser.setFont(NecessaryData.necessaryData.setting.font);
-            jFileChooser.setFileFilter(new FileNameExtensionFilter("辩论赛配置文件", "DeBateConfig"));
+            jFileChooser.setFont(DebateNecessaryData.deBateNecessaryData.setting.font);
+            jFileChooser.setFileFilter(new FileNameExtensionFilter("XML文件", "xml"));
             jFileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             jFileChooser.setMultiSelectionEnabled(true);
             if (
@@ -95,20 +97,32 @@ public class Welcome extends View {
                 }
                 for (File file:selectedFiles){
                     try {
-                        Config abstractFunction =
-                                (Config)
-                                        new ObjectInputStream(
-                                                Files.newInputStream(
-                                                        file.toPath()
-                                                )
-                                        ).readObject();
-                        for (Config f : NecessaryData.necessaryData.configs) {
-                            if (f.name().equals(abstractFunction.name())) {
+                        LinkedList<Bout> bouts=new LinkedList<>();
+                        SAXReader saxReader=new SAXReader();
+                        Document document=saxReader.read(file);
+                        Element root=document.getRootElement();
+                        for (Element element:root.element("bouts").elements()){
+                            bouts.add(new Bout(
+                                    element.elementText("name"),
+                                    Integer.parseInt(element.elementText("start")),
+                                    Integer.parseInt(element.elementText("finishedWaitTime")),
+                                    bouts
+                            ));
+                        }
+                        Config config =new Config(
+                                root.elementText("name"),
+                                root.elementText("prosName"),
+                                root.elementText("consName"),
+                                root.elementText("thesis"),
+                                bouts
+                        );
+                        for (Config f : DebateNecessaryData.deBateNecessaryData.configs) {
+                            if (f.name().equals(config.name())) {
                                 throw new RuntimeException("列表中已有同名配置");
                             }
                         }
-                        NecessaryData.necessaryData.configs.add(
-                                abstractFunction
+                        DebateNecessaryData.deBateNecessaryData.configs.add(
+                                config
                         );
                     }catch (Exception exception){
                         new ErrorInterface(
@@ -123,16 +137,39 @@ public class Welcome extends View {
         });
         out.addActionListener(e -> {
             JFileChooser jFileChooser=new JFileChooser();
-            jFileChooser.setFont(NecessaryData.necessaryData.setting.font);
+            jFileChooser.setFont(DebateNecessaryData.deBateNecessaryData.setting.font);
             jFileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (
                     jFileChooser.showOpenDialog(null)==JFileChooser.APPROVE_OPTION
             ){
                 try {
                     for (Config config : current) {
-                        new ObjectOutputStream(
-                                Files.newOutputStream(Paths.get(jFileChooser.getSelectedFile().getPath() + "\\" + config.name() + ".DeBateConfig"))
-                        ).writeObject(config);
+                        StringBuilder stringBuilder=new StringBuilder();
+                        stringBuilder
+                                .append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n")
+                                .append("<Config>\r\n")
+                                .append("\t<name>").append(config.name()).append("</name>\r\n")
+                                .append("\t<prosName>").append(config.prosName()).append("</prosName>\r\n")
+                                .append("\t<consName>").append(config.consName()).append("</consName>\r\n")
+                                .append("\t<thesis>").append(config.thesis()).append("</thesis>\r\n");
+                        stringBuilder.append("\t<bouts>\r\n");
+                        for (Bout bout:config.bouts()) {
+                            stringBuilder
+                                    .append("\t\t<bout>\r\n")
+                                    .append("\t\t\t<name>").append(bout.name()).append("</name>\r\n")
+                                    .append("\t\t\t<start>").append(bout.start()).append("</start>\r\n")
+                                    .append("\t\t\t<finishedWaitTime>").append(bout.finishedWaitTime()).append("</finishedWaitTime>\r\n")
+                                    .append("\t\t\t</bout>\r\n");
+                        }
+                        stringBuilder.append("\t</bouts>\r\n");
+                        stringBuilder.append("</Config>\r\n");
+                        File file=new File(jFileChooser.getSelectedFile().getPath() + "\\" + config.name() + ".xml");
+                        if (file.exists()){
+                            file.delete();
+                        }
+                        FileWriter fileWriter=new FileWriter(file,true);
+                        fileWriter.write(stringBuilder.toString());
+                        fileWriter.close();
                     }
                     ProcessBuilder processBuilder = new ProcessBuilder("explorer", jFileChooser.getSelectedFile().getPath());
                     processBuilder.start();
@@ -147,7 +184,6 @@ public class Welcome extends View {
         });
         use.addActionListener(e -> {
             Config.config=current[0];
-            MainInterface.mainInterface.start.flush();
             MainInterface.mainInterface.start.run();
             MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.start);
         });
@@ -156,7 +192,7 @@ public class Welcome extends View {
     @Override
     public void flush() {
         super.flush();
-        list.setListData(NecessaryData.necessaryData.configs.toArray(new Config[0]));
+        list.setListData(DebateNecessaryData.deBateNecessaryData.configs.toArray(new Config[0]));
     }
 
     @Override
@@ -180,9 +216,8 @@ public class Welcome extends View {
     private void createUIComponents() {
         // TODO: place custom component creation code here
         contentPane=new JPanel(){
-            private final Image image = new ImageIcon("").getImage();
             protected void paintComponent(Graphics g) {
-                g.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), this);
+                g.drawImage(null, 0, 0, this.getWidth(), this.getHeight(), this);
             }
         };
     }

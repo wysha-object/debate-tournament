@@ -4,6 +4,7 @@ package tools;
 import data.Style;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashSet;
 
 /**
@@ -24,6 +25,10 @@ public class Choose extends JDialog {
         textArea.setEditable(false);
         setContentPane(contentPane);
         setModal(true);
+        setSize(
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
+        );
         getRootPane().setDefaultButton(buttonOkay);
         buttonOkay.addActionListener(e -> onOkay());
         buttonCancel.addActionListener(e -> onCancel());

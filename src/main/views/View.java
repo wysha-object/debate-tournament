@@ -7,7 +7,7 @@ import javax.swing.*;
  */
 abstract public class View {
     public final String viewName;
-    public JPanel jPanel;
+    public JPanel centerPanel;
     public View(String viewName) {
         this.viewName = viewName;
     }
