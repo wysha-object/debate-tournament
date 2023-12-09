@@ -40,6 +40,7 @@ public class Start extends View{
     private boolean b;
     private Thread t;
     private static class I{
+        boolean b;
         long i;
         @Override
         public String toString() {
@@ -60,10 +61,12 @@ public class Start extends View{
                 currentTimeMillis=System.currentTimeMillis();
                 ls.i = bout.start()* 1000L;
                 rs.i = bout.start()* 1000L;
+                ls.b=true;
+                rs.b=true;
                 next.setEnabled(true);
+                center.setVisible(true);
                 flush();
                 t=new Thread(()->{
-                    center.setVisible(true);
                     do {
                         I n;
                         if (b){
@@ -99,7 +102,8 @@ public class Start extends View{
 
                         s.i=s.i-(System.currentTimeMillis()-currentTimeMillis);
                         currentTimeMillis=System.currentTimeMillis();
-                        if (s.i == (bout.start()* 1000L) / 2) {
+                        if (s.i <= (bout.start()* 1000L) / 2&&s.b) {
+                            s.b=false;
                             try {
                                 Clip clip = AudioSystem.getClip();
                                 clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
