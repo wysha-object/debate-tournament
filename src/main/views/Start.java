@@ -99,7 +99,7 @@ public class Start extends View{
 
                         s.i=s.i-(System.currentTimeMillis()-currentTimeMillis);
                         currentTimeMillis=System.currentTimeMillis();
-                        if (s.i == bout.start()* 1000L / 2) {
+                        if (s.i == (bout.start()* 1000L) / 2) {
                             try {
                                 Clip clip = AudioSystem.getClip();
                                 clip.open(AudioSystem.getAudioInputStream(new File("resource/media/Ring02.wav")));
