@@ -154,12 +154,12 @@ public class Welcome extends View {
                                 .append("\t<thesis>").append(config.thesis()).append("</thesis>\r\n");
                         stringBuilder.append("\t<bouts>\r\n");
                         for (Bout bout:config.bouts()) {
+                            stringBuilder.append("\t\t<bout>\r\n");
                             stringBuilder
-                                    .append("\t\t<bout>\r\n")
                                     .append("\t\t\t<name>").append(bout.name()).append("</name>\r\n")
                                     .append("\t\t\t<start>").append(bout.start()).append("</start>\r\n")
-                                    .append("\t\t\t<finishedWaitTime>").append(bout.finishedWaitTime()).append("</finishedWaitTime>\r\n")
-                                    .append("\t\t\t</bout>\r\n");
+                                    .append("\t\t\t<finishedWaitTime>").append(bout.finishedWaitTime()).append("</finishedWaitTime>\r\n");
+                            stringBuilder.append("\t\t</bout>\r\n");
                         }
                         stringBuilder.append("\t</bouts>\r\n");
                         stringBuilder.append("</Config>\r\n");
