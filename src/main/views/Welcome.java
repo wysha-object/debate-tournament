@@ -16,6 +16,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -167,7 +168,7 @@ public class Welcome extends View {
                         if (file.exists()){
                             file.delete();
                         }
-                        FileWriter fileWriter=new FileWriter(file,true);
+                        FileWriter fileWriter=new FileWriter(file, StandardCharsets.UTF_8);
                         fileWriter.write(stringBuilder.toString());
                         fileWriter.close();
                     }
