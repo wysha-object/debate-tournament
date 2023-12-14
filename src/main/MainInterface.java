@@ -36,6 +36,7 @@ public class MainInterface extends JFrame {
     private JButton set;
     private JButton exit;
     private JButton flush;
+    private JPanel down;
     Thread thread;
     public MainInterface() throws Throwable {
         mainInterface=this;
@@ -45,27 +46,31 @@ public class MainInterface extends JFrame {
                 (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
         );
         show.setLayout(cardLayout);
-        JFrame jFrame=new JFrame();
-        JPanel jPanel=new JPanel();
-        JLabel jLabel=new JLabel("开发者:熊锦枫",JLabel.CENTER);
-        JLabel mail=new JLabel("开发者邮箱:wyshazhisishen@yeah.net",JLabel.CENTER);
-        jLabel.setFont(new Font("微软雅黑",Font.PLAIN,72));
-        mail.setFont(new Font("微软雅黑",Font.PLAIN,72));
-        GridLayout gridLayout=new GridLayout(2,1);
-        jPanel.setLayout(gridLayout);
-        jPanel.add(jLabel,BorderLayout.NORTH);
-        jPanel.add(mail,BorderLayout.SOUTH);
-        jFrame.add(jPanel);
-        jPanel.setBackground(Color.BLACK);
-        jLabel.setForeground(Color.WHITE);
-        mail.setForeground(Color.WHITE);
-        jFrame.setUndecorated(true);
-        jFrame.setSize(
-                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
-                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
-        );
+        class MyJFrame extends JFrame {
+            MyJFrame() {
+                JPanel jPanel = new JPanel();
+                JLabel jLabel = new JLabel("开发者:熊锦枫", JLabel.CENTER);
+                JLabel mail = new JLabel("开发者邮箱:wyshazhisishen@yeah.net", JLabel.CENTER);
+                jLabel.setFont(new Font("微软雅黑", Font.PLAIN, 72));
+                mail.setFont(new Font("微软雅黑", Font.PLAIN, 72));
+                GridLayout gridLayout = new GridLayout(2, 1);
+                jPanel.setLayout(gridLayout);
+                jPanel.add(jLabel, BorderLayout.NORTH);
+                jPanel.add(mail, BorderLayout.SOUTH);
+                add(jPanel);
+                jPanel.setBackground(Color.BLACK);
+                jLabel.setForeground(Color.WHITE);
+                mail.setForeground(Color.WHITE);
+                setUndecorated(true);
+                setSize(
+                        (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth(),
+                        (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()
+                );
+                setAlwaysOnTop(true);
+            }
+        }
+        MyJFrame jFrame = new MyJFrame();
         jFrame.setVisible(true);
-        jFrame.setAlwaysOnTop(true);
         for (float i=0;i<1;i+= 0.001F){
             sleep(1);
             jFrame.setOpacity(i);
@@ -91,9 +96,36 @@ public class MainInterface extends JFrame {
             try {
                 DebateNecessaryData.deBateNecessaryData.write();
             } catch (Throwable ex) {
-                System.exit(1);
+                throw new RuntimeException(ex);
             }
-            System.exit(0);
+            MainInterface.mainInterface.setEnabled(false);
+            new Thread(() -> {
+                MyJFrame frame = new MyJFrame();
+                frame.setVisible(true);
+                for (float i = 0; i < 1; i += 0.001F) {
+                    try {
+                        sleep(1);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    frame.setOpacity(i);
+                }
+                MainInterface.mainInterface.dispose();
+                try {
+                    sleep(1000);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
+                for (float i = 1; i > 0; i -= 0.001F) {
+                    try {
+                        sleep(1);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    frame.setOpacity(i);
+                }
+                System.exit(0);
+            }).start();
         });
         set.addActionListener(e -> {
             NecessarySet necessarySet=new NecessarySet();
@@ -127,6 +159,7 @@ public class MainInterface extends JFrame {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
         jPanels.add(contentPane);
+        jPanels.add(down);
         jPanels.add(show);
         buttons.add(v);
         buttons.add(upLabel);

@@ -7,7 +7,8 @@ import java.util.List;
 /**
  * @author wysha
  */
-public record Bout(String name, int start, int finishedWaitTime, LinkedList<Bout> bouts) implements Serializable {
+public record Bout(boolean alternateSpeakers, boolean prosFirst, String name, int start, int finishedWaitTime,
+                   LinkedList<Bout> bouts) implements Serializable {
     /**
      *
      */

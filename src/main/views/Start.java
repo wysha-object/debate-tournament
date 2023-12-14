@@ -51,6 +51,32 @@ public class Start extends View{
     private final I rs= new I();
     private I s;
     private long currentTimeMillis;
+    public Start() {
+        super(Start.class.toString());
+        super.centerPanel =pane;
+        setStyle();
+        next.addActionListener(e -> b = !b);
+        stop.addActionListener(e -> {
+            thread.suspend();
+            t.suspend();
+            stop.setEnabled(false);
+            go.setEnabled(true);
+        });
+        go.addActionListener(e -> {
+            thread.resume();
+            t.resume();
+            currentTimeMillis = System.currentTimeMillis();
+            stop.setEnabled(true);
+            go.setEnabled(false);
+        });
+        finish.addActionListener(e -> {
+            thread.stop();
+            t.stop();
+            MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.welcome);
+        });
+        jump.addActionListener(e -> t.stop());
+    }
+
     public void run(){
         thread= new Thread(() ->{
             go.setEnabled(false);
@@ -63,10 +89,9 @@ public class Start extends View{
                 rs.i = bout.start()* 1000L;
                 ls.b=true;
                 rs.b=true;
-                next.setEnabled(true);
                 center.setVisible(true);
                 flush();
-                t=new Thread(()->{
+                Runnable runnable1 = () -> {
                     do {
                         I n;
                         if (b){
@@ -114,9 +139,11 @@ public class Start extends View{
                         }
                         if (s.i <= 0) {
                             s.i = 0;
-                            if (next.isEnabled()){
-                                next.setEnabled(false);
-                                b = !b;
+                            if (bout.alternateSpeakers()) {
+                                if (next.isEnabled()) {
+                                    next.setEnabled(false);
+                                    b = !b;
+                                }
                             }
                             try {
                                 Clip clip = AudioSystem.getClip();
@@ -126,33 +153,94 @@ public class Start extends View{
                                 throw new RuntimeException(e);
                             }
                         }
-                    } while (ls.i >= 0&&rs.i >= 0&&ls.i+rs.i>0);
-                    leftTime.setText("00:00.000");
-                    rightTime.setText("00:00.000");
-
-                });
-                t.start();
-                while (t.isAlive()){
-                    try {
-                        sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    } while (bout.alternateSpeakers() ? ls.i + rs.i > 0 : s.i > 0);
+                    if (bout.alternateSpeakers()) {
+                        leftTime.setText("00:00.000");
+                        rightTime.setText("00:00.000");
+                    } else {
+                        if (b) {
+                            leftTime.setText("00:00.000");
+                        } else {
+                            rightTime.setText("00:00.000");
+                        }
                     }
-                }
-                t=new Thread(()->{
+                };
+                Runnable runnable2 = () -> {
                     center.setVisible(false);
                     leftTime.setText("");
                     rightTime.setText("");
-                    String s=current==Config.config.bouts().size()-1?"本次辩论赛即将结束:":"即将进入下一阶段:";
-                    for (int i = bout.finishedWaitTime(); i>=0; i--){
-                        stage.setText(s+i);
+                    String s = current == Config.config.bouts().size() - 1 ? "本次辩论赛即将结束:" : "即将进入下一阶段:";
+                    for (int i = bout.finishedWaitTime(); i >= 0; i--) {
+                        stage.setText(s + i);
                         try {
                             sleep(1000);
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
                     }
-                });
+                };
+                t = new Thread(runnable1);
+                b = bout.prosFirst();
+                if (bout.alternateSpeakers()) {
+                    next.setVisible(true);
+                    next.setEnabled(true);
+                    t.start();
+                    while (t.isAlive()) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                } else {
+                    next.setVisible(false);
+                    t.start();
+                    while (t.isAlive()) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    if (bout.prosFirst()) {
+                        ls.i = 0;
+                    } else {
+                        rs.i = 0;
+                    }
+                    b = !b;
+                    center.setVisible(false);
+                    t = new Thread(() -> {
+                        String s = "即将轮到另一方发言:";
+                        for (int i = bout.finishedWaitTime() / 2; i >= 0; i--) {
+                            stage.setText(s + i);
+                            try {
+                                sleep(1000);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
+                    t.start();
+                    while (t.isAlive()) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    center.setVisible(true);
+                    stage.setText("第" + (current + 1) + "辩" + (!bout.name().isEmpty() ? ":" + bout.name() : ""));
+                    t = new Thread(runnable1);
+                    t.start();
+                    while (t.isAlive()) {
+                        try {
+                            sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+                t = new Thread(runnable2);
                 t.start();
                 while (t.isAlive()){
                     try {
@@ -165,30 +253,6 @@ public class Start extends View{
             MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.welcome);
         });
         thread.start();
-    }
-    public Start() {
-        super(Start.class.toString());
-        super.centerPanel =pane;
-        setStyle();
-        next.addActionListener(e -> b = !b);
-        stop.addActionListener(e -> {
-            thread.suspend();
-            t.suspend();
-            stop.setEnabled(false);
-            go.setEnabled(true);
-        });
-        go.addActionListener(e -> {
-            thread.resume();
-            t.resume();
-            stop.setEnabled(true);
-            go.setEnabled(false);
-        });
-        finish.addActionListener(e -> {
-            thread.stop();
-            t.stop();
-            MainInterface.mainInterface.setCurrent(MainInterface.mainInterface.welcome);
-        });
-        jump.addActionListener(e -> t.stop());
     }
     @Override
     public void flush(){

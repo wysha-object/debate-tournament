@@ -104,6 +104,8 @@ public class Welcome extends View {
                         Element root=document.getRootElement();
                         for (Element element:root.element("bouts").elements()){
                             bouts.add(new Bout(
+                                    Boolean.parseBoolean(element.elementText("alternateSpeakers")),
+                                    Boolean.parseBoolean(element.elementText("prosFirst")),
                                     element.elementText("name"),
                                     Integer.parseInt(element.elementText("start")),
                                     Integer.parseInt(element.elementText("finishedWaitTime")),
@@ -157,6 +159,8 @@ public class Welcome extends View {
                         for (Bout bout:config.bouts()) {
                             stringBuilder.append("\t\t<bout>\r\n");
                             stringBuilder
+                                    .append("\t\t\t<alternateSpeakers>").append(bout.alternateSpeakers()).append("</alternateSpeakers>\r\n")
+                                    .append("\t\t\t<prosFirst>").append(bout.prosFirst()).append("</prosFirst>\r\n")
                                     .append("\t\t\t<name>").append(bout.name()).append("</name>\r\n")
                                     .append("\t\t\t<start>").append(bout.start()).append("</start>\r\n")
                                     .append("\t\t\t<finishedWaitTime>").append(bout.finishedWaitTime()).append("</finishedWaitTime>\r\n");
