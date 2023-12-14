@@ -16,8 +16,8 @@ import java.util.LinkedList;
  * @author wysha
  */
 public class Edit extends JDialog {
+    LinkedList<Bout> bouts = new LinkedList<>();
     private Bout[] current;
-    LinkedList<Bout> bouts=new LinkedList<>();
     private JPanel contentPane;
     private JButton buttonOkay;
     private JButton buttonCancel;
@@ -45,19 +45,22 @@ public class Edit extends JDialog {
     public Edit(Config config) {
         setName.setText("配置");
         setUndecorated(true);
-        if (config!=null){
-            bouts=new LinkedList<>(config.bouts());
+        if (config != null) {
+            bouts = new LinkedList<>(config.bouts());
             for (int i = 0, boutsSize = bouts.size(); i < boutsSize; i++) {
                 Bout bout = bouts.get(i);
                 bouts.remove(i);
                 bouts.add(
                         i,
                         new Bout(
-                        bout.name(),
-                        bout.start(),
-                        bout.finishedWaitTime(),
-                        bouts
-                ));
+                                bout.alternateSpeakers(),
+                                bout.prosFirst(),
+                                bout.name(),
+                                bout.start(),
+                                bout.finishedWaitTime(),
+                                bouts
+                        )
+                );
             }
             setPros.setText(config.prosName());
             setCons.setText(config.consName());
@@ -76,14 +79,14 @@ public class Edit extends JDialog {
                 edit.setEnabled(false);
                 upMove.setEnabled(false);
                 downMove.setEnabled(false);
-            } else if (list.getSelectedIndices().length==1){
+            } else if (list.getSelectedIndices().length == 1) {
                 current = new Bout[1];
                 current[0] = list.getSelectedValue();
                 delete.setEnabled(true);
                 edit.setEnabled(true);
                 upMove.setEnabled(true);
                 downMove.setEnabled(true);
-            }else {
+            } else {
                 current = new Bout[list.getSelectedIndices().length];
                 int[] selectedIndices = list.getSelectedIndices();
                 for (int j = 0; j < selectedIndices.length; j++) {
@@ -96,7 +99,7 @@ public class Edit extends JDialog {
             }
         });
         delete.addActionListener(e -> {
-            for(Bout bout:current){
+            for (Bout bout : current) {
                 bouts.remove(bout);
             }
             flush();
@@ -119,33 +122,33 @@ public class Edit extends JDialog {
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         setSize(
-                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth()*2/3,
-                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight()*2/3
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth() * 2 / 3,
+                (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() * 2 / 3
         );
         setLocationRelativeTo(null);
         flush();
         add.addActionListener(e -> {
-           BoutEdit boutEdit=new BoutEdit(null,this.bouts);
-           boutEdit.setVisible(true);
-            if (boutEdit.value!=null){
+            BoutEdit boutEdit = new BoutEdit(null, this.bouts);
+            boutEdit.setVisible(true);
+            if (boutEdit.value != null) {
                 bouts.add(boutEdit.value);
             }
-           flush();
+            flush();
         });
         edit.addActionListener(e -> {
-            BoutEdit boutEdit=new BoutEdit(current[0],this.bouts);
+            BoutEdit boutEdit = new BoutEdit(current[0], this.bouts);
             boutEdit.setVisible(true);
-            if (boutEdit.value!=null){
+            if (boutEdit.value != null) {
                 bouts.add(boutEdit.value);
             }
             flush();
         });
         upMove.addActionListener(e -> {
-            for (Bout bout:current){
-                for (int i=0;i<bouts.size();i++){
-                    if (bout==bouts.get(i)&&i-1>0){
+            for (Bout bout : current) {
+                for (int i = 0; i < bouts.size(); i++) {
+                    if (bout == bouts.get(i) && i - 1 >= 0) {
                         bouts.remove(i);
-                        bouts.add(i-1,bout);
+                        bouts.add(i - 1, bout);
                         break;
                     }
                 }
@@ -153,11 +156,11 @@ public class Edit extends JDialog {
             flush();
         });
         downMove.addActionListener(e -> {
-            for (Bout bout:current){
-                for (int i=0;i<bouts.size();i++){
-                    if (bout==bouts.get(i)&&i+1<bouts.size()){
+            for (Bout bout : current) {
+                for (int i = 0; i < bouts.size(); i++) {
+                    if (bout == bouts.get(i) && i + 1 < bouts.size()) {
                         bouts.remove(i);
-                        bouts.add(i+1,bout);
+                        bouts.add(i + 1, bout);
                         break;
                     }
                 }
@@ -166,7 +169,7 @@ public class Edit extends JDialog {
         });
     }
 
-    private void flush(){
+    private void flush() {
         setStyle();
         list.setListData(bouts.toArray(new Bout[0]));
     }
@@ -174,7 +177,7 @@ public class Edit extends JDialog {
     public void setStyle() {
         HashSet<JComponent> jPanels = new HashSet<>();
         HashSet<JComponent> buttons = new HashSet<>();
-        HashSet<JList<?>> lists=new HashSet<>();
+        HashSet<JList<?>> lists = new HashSet<>();
         jPanels.add(l);
         jPanels.add(r);
         jPanels.add(down);
@@ -197,17 +200,18 @@ public class Edit extends JDialog {
         buttons.add(upMove);
         buttons.add(downMove);
         lists.add(list);
-        Style.setStyle(jPanels,buttons,lists);
+        Style.setStyle(jPanels, buttons, lists);
     }
 
     private void onOkay() {
-        DebateNecessaryData.deBateNecessaryData.configs.add(new Config(
-                setName.getText(),
-                setPros.getText(),
-                setCons.getText(),
-                textField1.getText(),
-                bouts
-        ));
+        DebateNecessaryData.deBateNecessaryData.configs.add(
+                new Config(
+                        setName.getText(),
+                        setPros.getText(),
+                        setCons.getText(),
+                        textField1.getText(),
+                        bouts
+                ));
         // 在此处添加您的代码
         dispose();
     }

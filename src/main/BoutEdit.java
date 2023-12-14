@@ -26,6 +26,9 @@ public class BoutEdit extends JDialog {
     private JLabel l3;
     private JLabel l4;
     private JTextField textField1;
+    private JCheckBox isAlternateSpeakers;
+    private JCheckBox isProsFirst;
+    private JPanel pane;
     private final LinkedList<Bout> bouts;
     public BoutEdit(Bout bout, LinkedList<Bout> bouts) {
         this.bouts=bouts;
@@ -33,9 +36,15 @@ public class BoutEdit extends JDialog {
         setContentPane(contentPane);
         setModal(true);
         if (bout!=null){
-            textField1.setText(bout.name());
+            textField1.setText(bout.name() + "'");
+            isAlternateSpeakers.setSelected(bout.alternateSpeakers());
+            isProsFirst.setSelected(bout.prosFirst());
             setSS.setValue(bout.start());
             setWT.setValue(bout.finishedWaitTime());
+        } else {
+            textField1.setText(String.valueOf(bouts.size() + 1));
+            setSS.setValue(180);
+            setWT.setValue(30);
         }
         getRootPane().setDefaultButton(buttonOK);
 
@@ -63,6 +72,8 @@ public class BoutEdit extends JDialog {
 
     private void onOK() {
         value= new Bout(
+                isAlternateSpeakers.isSelected(),
+                isProsFirst.isSelected(),
                 textField1.getText(),
                 (int) setSS.getValue(),
                 (int) setWT.getValue(),
@@ -82,14 +93,17 @@ public class BoutEdit extends JDialog {
         HashSet<JList<?>> lists=new HashSet<>();
         jPanels.add(up);
         jPanels.add(down);
+        jPanels.add(pane);
         buttons.add(buttonCancel);
         buttons.add(buttonOK);
         buttons.add(l1);
         buttons.add(l3);
         buttons.add(l4);
+        buttons.add(isProsFirst);
         buttons.add(textField1);
         buttons.add(setSS);
         buttons.add(setWT);
+        buttons.add(isAlternateSpeakers);
         Style.setStyle(jPanels,buttons,lists);
     }
 
