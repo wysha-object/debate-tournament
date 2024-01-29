@@ -1,0 +1,3 @@
+Manifest-Version: 1.0.3
+Main-Class: cn.com.wysha.debate_tournament.main.MainInterface
+
